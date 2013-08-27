@@ -1,22 +1,22 @@
 <?php
 
-class UrlController extends \BaseController {
+class ClienteController extends \BaseController {
 
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
-public function index()
-{
-     $urls = Url::where('user_id', Auth::user()->id)->get();
- 
-    return Response::json(array(
-        'error' => false,
-        'urls' => $urls->toArray()),
-        200
-    );
-}
+	public function index() {
+
+	    $users = User::with('enderecos')->where('id', Auth::User()->id)->get();
+	 
+	    return Response::json(array(
+	        'error' => false,
+	        'urls' => $users->toArray()),
+	        200
+	    );
+	}
 
 	/**
 	 * Show the form for creating a new resource.
