@@ -3,7 +3,9 @@
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
+use LaravelBook\Ardent\Ardent;
+
+class User extends Ardent implements UserInterface, RemindableInterface {
 
 	/**
 	 * The database table used by the model.
@@ -11,6 +13,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var string
 	 */
 	protected $table = 'users';
+
+	public $guarded = array('id');
+
+	public static $rules = array(
+	    'username' => 'required|between:4,16|unique:users'
+	  );
 
 	/**
 	 * The attributes excluded from the model's JSON form.
