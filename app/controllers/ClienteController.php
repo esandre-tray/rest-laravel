@@ -13,19 +13,9 @@ class ClienteController extends \BaseController {
 	 
 	    return Response::json(array(
 	        'error' => false,
-	        'urls' => $users->toArray()),
+	        'customer' => $users->toArray()),
 	        200
 	    );
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
 	}
 
 	/**
@@ -33,23 +23,27 @@ class ClienteController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
-	    $url = new Url;
-	    $url->url = Request::get('url');
-	    $url->description = Request::get('description');
-	    $url->user_id = Auth::user()->id;
+	public function store() {
+
+	    $user = new User(\Input::all());
+
+		if ( $user->save() ) {
 	 
-	    // Validation and Filtering is sorely needed!!
-	    // Seriously, I'm a bad person for leaving that out.
-	 
-	    $url->save();
-	 
-	    return Response::json(array(
-	        'error' => false,
-	        'urls' => $urls->toArray()),
-	        200
-	    );
+		    return Response::json(array(
+		        'error' => false,
+		        'user' => $user->toArray()),
+		        200
+		    );
+
+		} else {
+
+			return Response::json(array(
+		        'error' => true,
+		        'errors' => $user->errors()->all()),
+		        400
+		    );
+
+		}
 	}
 
 	/**
@@ -58,30 +52,18 @@ class ClienteController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
-	{
-// Make sure current user owns the requested resource
-    $url = Url::where('user_id', Auth::user()->id)
+	public function show($id) {
+
+    	$url = Url::where('user_id', Auth::user()->id)
             ->where('id', $id)
             ->take(1)
             ->get();
  
-    return Response::json(array(
-        'error' => false,
-        'urls' => $url->toArray()),
-        200
-    );
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
+	    return Response::json(array(
+	        'error' => false,
+	        'urls' => $url->toArray()),
+	        200
+	    );
 	}
 
 	/**
